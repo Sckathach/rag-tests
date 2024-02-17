@@ -1,6 +1,5 @@
 import torch
 from transformers import AutoTokenizer, BitsAndBytesConfig, AutoModelForCausalLM, AutoConfig
-from langchain_community.document_loaders import UnstructuredMarkdownLoader
 
 model_name = "mistralai/Mistral-7B-Instruct-v0.2"
 
@@ -45,11 +44,12 @@ model = AutoModelForCausalLM.from_pretrained(
     quantization_config=bnb_config,
 )
 
-inputs_not_chat = tokenizer.encode_plus("[INST] Tell me about fantasy football? [/INST]", return_tensors="pt")['input_ids'].to('cuda')
+# inputs_not_chat = tokenizer.encode_plus("[INST] Tell me about fantasy football? [/INST]", return_tensors="pt")['input_ids'].to('cuda')
+#
+# generated_ids = model.generate(inputs_not_chat,
+#                                max_new_tokens=1000,
+#                                do_sample=True)
+# decoded = tokenizer.batch_decode(generated_ids)
+#
+# print(decoded)
 
-generated_ids = model.generate(inputs_not_chat,
-                               max_new_tokens=1000,
-                               do_sample=True)
-decoded = tokenizer.batch_decode(generated_ids)
-
-print(decoded)
