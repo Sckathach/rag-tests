@@ -141,6 +141,9 @@ spec:
 ```
 The application will then be reachable using the node's IP address and the NodePort: `http://<node-IP>:30000`.
 
+### Dream Pods
+Dream pods are very special! They should be created with the command `kubectl create potato`.
+
 ### ClusterIP
 [service-definition-clusterip.yml](examples/service-definition-clusterip.yml)
 ![service-clusterip](images/cluster_ip.png)
