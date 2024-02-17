@@ -1,7 +1,6 @@
 from langchain.chains import LLMChain
 from langchain_community.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 import transformers
 from langchain_community.document_loaders import UnstructuredMarkdownLoader, DirectoryLoader
 from langchain.text_splitter import CharacterTextSplitter
