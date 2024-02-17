@@ -32,53 +32,53 @@ retriever = db.as_retriever(
 # query = "How to delete a pod?"
 # docs = db.similarity_search(query)
 # print(docs[3].page_content)
-
-text_generation_pipeline = transformers.pipeline(
-    model=model,
-    tokenizer=tokenizer,
-    task="text-generation",
-    temperature=0.2,
-    do_sample=True,
-    repetition_penalty=1.1,
-    return_full_text=True,
-    max_new_tokens=400
-)
-
-
-prompt_template = """
-### [INST] 
-Instruction: Answer the question based on your 
-Kubernetes knowledge. Here is context to help:
-
-{context}
-
-### QUESTION:
-{question} 
-
-[/INST]
- """
-
-mistral_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
-
-# Create prompt from prompt template
-prompt = PromptTemplate(
-    input_variables=["context", "question"],
-    template=prompt_template,
-)
-
-# Create llm chain
-llm_chain = LLMChain(llm=mistral_llm, prompt=prompt)
-
-query = "How can I create a dream pod?"
-
-rag_chain = (
-    {
-        "context": retriever,
-        "question": RunnablePassthrough()
-    }
-    | llm_chain
-)
-
-r = rag_chain.invoke(query)
-print(r)
-
+#
+# text_generation_pipeline = transformers.pipeline(
+#     model=model,
+#     tokenizer=tokenizer,
+#     task="text-generation",
+#     temperature=0.2,
+#     do_sample=True,
+#     repetition_penalty=1.1,
+#     return_full_text=True,
+#     max_new_tokens=400
+# )
+#
+#
+# prompt_template = """
+# ### [INST]
+# Instruction: Answer the question based on your
+# Kubernetes knowledge. Here is context to help:
+#
+# {context}
+#
+# ### QUESTION:
+# {question}
+#
+# [/INST]
+#  """
+#
+# mistral_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
+#
+# # Create prompt from prompt template
+# prompt = PromptTemplate(
+#     input_variables=["context", "question"],
+#     template=prompt_template,
+# )
+#
+# # Create llm chain
+# llm_chain = LLMChain(llm=mistral_llm, prompt=prompt)
+#
+# query = "How can I create a dream pod?"
+#
+# rag_chain = (
+#     {
+#         "context": retriever,
+#         "question": RunnablePassthrough()
+#     }
+#     | llm_chain
+# )
+#
+# r = rag_chain.invoke(query)
+# print(r)
+#
