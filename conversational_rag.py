@@ -14,7 +14,12 @@ standalone_query_generation_pipeline = pipeline(
     model=model,
     tokenizer=tokenizer,
     task="text-generation",
-    temperature=0.0,
+    # TODO: is do_sample useful?
+    do_sample=True,
+    # TODO: is it possible to set the temperature to 0 somehow? ValueError: `temperature` (=0.0) has to be a strictly
+    #  positive float, otherwise your next token scores will be invalid. If you're looking for greedy decoding
+    #  strategies, set `do_sample=False`.
+    temperature=0.001,
     repetition_penalty=1.1,
     return_full_text=True,
     max_new_tokens=1000,
@@ -25,6 +30,7 @@ response_generation_pipeline = pipeline(
     model=model,
     tokenizer=tokenizer,
     task="text-generation",
+    do_sample=True,
     temperature=0.2,
     repetition_penalty=1.1,
     return_full_text=True,
@@ -96,7 +102,18 @@ standalone_query_generation_prompt = loaded_memory | standalone_question | outpu
 inputs = {"question": "What is a dream pod?"}
 memory.save_context(inputs, {"answer": "A dream pod is a special Kubernetes pod."})
 
-inputs = {"question": "How can I create one?"}
-r = standalone_query_generation_prompt.invoke(inputs)['standalone_question_prompt_result']
+# r = standalone_query_generation_prompt.invoke(inputs)['standalone_question_prompt_result']
 
+standalone_query_generation_chain = (
+    loaded_memory
+    | {
+        "question": lambda x: x["question"],
+        "chat_history": lambda x: get_buffer_string(x["chat_history"]),
+    }
+    | STANDALONE_QUESTION_PROMPT
+    | standalone_query_generation_llm
+)
+
+inputs = {"question": "How can I create one?"}
+r = standalone_query_generation_chain.invoke(inputs)
 print(r)
