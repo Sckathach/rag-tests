@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-replicaset
+  labels:
+    app: myapp 
+    type: front-end
+spec:
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  replicas: 3
+  # selector is not needed, but replicaset can take care of other pods, not only those in its template section
+  # For instance, it will make sure there are always 3 pods with the label type: front-end up
+  selector: 
+    matchLabels:
+      type: front-end
