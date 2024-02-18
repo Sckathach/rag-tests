@@ -9,7 +9,7 @@ from langchain_core.prompts.chat import ChatPromptTemplate
 
 from operator import itemgetter
 
-from rag import retriever
+from rag import retrieve_to_string
 from model import model, tokenizer
 
 standalone_query_generation_pipeline = pipeline(
@@ -113,7 +113,7 @@ standalone_question = {
                            | standalone_query_generation_llm,
 }
 retrieved_documents = {
-    "docs": itemgetter("standalone_question") | retriever,
+    "docs": itemgetter("standalone_question") | retrieve_to_string,
     "question": lambda x: x["standalone_question"],
 }
 final_inputs = {

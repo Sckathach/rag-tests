@@ -1,11 +1,11 @@
 from langchain_community.document_loaders import UnstructuredMarkdownLoader, DirectoryLoader
 from langchain.text_splitter import CharacterTextSplitter, Document
-from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
-import nest_asyncio
 from typing import List, Dict, Any, Union
-from db_utils import create_db_connection
+import nest_asyncio
 import psycopg2
+
+from db_utils import create_db_connection
 
 nest_asyncio.apply()
 
@@ -91,5 +91,13 @@ def retrieve(query: str) -> List[Dict[str, Any]]:
         return response
 
 
+def retrieve_to_string(query: str) -> str:
+    r = retrieve(query)
+    response = ""
+    for x in r:
+        response += x["text"] + "\n"
+    return response
+
+
 # create_vector_database(create_chunked_docs())
-print(retrieve("How to create a dream pod?"))
+# print(retrieve("How to create a dream pod?"))

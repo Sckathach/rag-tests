@@ -6,13 +6,9 @@ import transformers
 import nest_asyncio
 
 from model import model, tokenizer
-from rag import db, retriever
+from rag import retrieve_to_string
 
 nest_asyncio.apply()
-
-query = "How to delete a pod?"
-docs = db.similarity_search(query)
-# print(docs[3].page_content)
 
 text_generation_pipeline = transformers.pipeline(
     model=model,
@@ -49,7 +45,7 @@ llm_chain = LLMChain(llm=mistral_llm, prompt=prompt)
 
 rag_chain = (
     {
-        "context": retriever,
+        "context": retrieve_to_string,
         "question": RunnablePassthrough()
     }
     | llm_chain
@@ -57,4 +53,4 @@ rag_chain = (
 
 query = "How can I create a dream pod?"
 r = rag_chain.invoke(query)
-# print(r)
+print(r)
