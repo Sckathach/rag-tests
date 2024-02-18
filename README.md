@@ -5,6 +5,7 @@
 - Conversational RAG: https://github.com/madhavthaker1/llm/blob/main/rag/conversational_rag.ipynb
 - LangChain doc: https://python.langchain.com/docs/modules/data_connection/document_loaders/file_directory
 - Anyscale: https://www.anyscale.com/blog/a-comprehensive-guide-for-building-rag-based-llm-applications-part-1
+- PGVector: https://medium.com/@johannes.ocean/setting-up-a-postgres-database-with-the-pgvector-extension-10ab7ff212cc
 
 ## Deployment using Ray?
 - Ray on Kubernetes: https://docs.ray.io/en/latest/cluster/kubernetes/index.html
