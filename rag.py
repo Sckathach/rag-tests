@@ -10,31 +10,6 @@ import psycopg2
 nest_asyncio.apply()
 
 
-def create_chunked_docs():
-    chunk_size = 300
-    chunk_overlap = 50
-
-    loader = DirectoryLoader('Kubernetes', glob="**/*.md", loader_cls=UnstructuredMarkdownLoader,
-                             show_progress=False)
-    docs = loader.load()
-
-    text_splitter = CharacterTextSplitter(
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-    )
-    chunked_documents = text_splitter.split_documents(docs)
-    return chunked_documents
-
-
-# db = FAISS.from_documents(chunked_documents,
-#                           HuggingFaceEmbeddings(model_name='sentence-transformers/all-mpnet-base-v2'))
-#
-# retriever = db.as_retriever(
-#     search_type="similarity",
-#     search_kwargs={'k': 4}
-# )
-
-
 class EmbedChunks:
     def __init__(self, model_name: str):
         self.embedding_model = HuggingFaceEmbeddings(
@@ -55,27 +30,23 @@ class EmbedChunks:
         return self.embedding_model.embed_documents([text])[0]
 
 
-# query = "How to create dream pods?"
-# embed = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2").embed_documents([query])[0]
-#
-# connection = create_db_connection()
-# cursor = connection.cursor()
-# try:
-#     cursor.execute(f"""
-#         SELECT text, 1 - (embedding <=> '{embed}') AS cosine_similarity
-#         FROM embeddings
-#         ORDER BY cosine_similarity desc
-#         LIMIT 3
-#     """)
-#     for r in cursor.fetchall():
-#         print(f"Text: {r[0]}; Similarity: {r[1]}")
-# except Exception as e:
-#     print("Error: ", e)
-# finally:
-#     cursor.close()
-#     connection.close()
-
 embedder = EmbedChunks(model_name="sentence-transformers/all-mpnet-base-v2")
+
+
+def create_chunked_docs():
+    chunk_size = 300
+    chunk_overlap = 50
+
+    loader = DirectoryLoader('Kubernetes', glob="**/*.md", loader_cls=UnstructuredMarkdownLoader,
+                             show_progress=False)
+    docs = loader.load()
+
+    text_splitter = CharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+    )
+    chunked_documents = text_splitter.split_documents(docs)
+    return chunked_documents
 
 
 def create_vector_database(chunked_documents):
@@ -120,4 +91,5 @@ def retrieve(query: str) -> List[Dict[str, Any]]:
         return response
 
 
+# create_vector_database(create_chunked_docs())
 print(retrieve("How to create a dream pod?"))
